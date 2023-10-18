@@ -236,6 +236,4 @@ class WritePRD(Action):
             requirements=requirements, search_information=info, format_example=format_example
         )
         logger.debug(prompt)
-        # prd = await self._aask_v1(prompt, "prd", OUTPUT_MAPPING)
-        prd = await self._aask_v1(prompt, "prd", OUTPUT_MAPPING, format=format)
-        return prd
+        return await self._aask_v1(prompt, "prd", OUTPUT_MAPPING, format=format)

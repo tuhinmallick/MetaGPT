@@ -63,7 +63,12 @@ class Researcher(Role):
             links = instruct_content.links
             todos = (todo.run(*url, query=query, system_text=research_system_text) for (query, url) in links.items())
             summaries = await asyncio.gather(*todos)
-            summaries = list((url, summary) for i in summaries for (url, summary) in i.items() if summary)
+            summaries = [
+                (url, summary)
+                for i in summaries
+                for (url, summary) in i.items()
+                if summary
+            ]
             ret = Message("", Report(topic=topic, summaries=summaries), role=self.profile, cause_by=type(todo))
         else:
             summaries = instruct_content.summaries

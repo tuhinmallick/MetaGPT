@@ -58,10 +58,9 @@ class QdrantStore(BaseStore):
         try:
             self.client.get_collection(collection_name)
             if force_recreate:
-                res = self.client.recreate_collection(
+                return self.client.recreate_collection(
                     collection_name, vectors_config=vectors_config, **kwargs
                 )
-                return res
             return True
         except:  # noqa: E722
             return self.client.recreate_collection(

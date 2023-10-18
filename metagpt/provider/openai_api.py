@@ -301,25 +301,21 @@ class OpenAIGPTAPI(BaseGPTAPI, RateLimiter):
             if not content:
                 logger.error("content cannot be empty!")
             else:
-                rsp = self._moderation(content=content)
-                return rsp
+                return self._moderation(content=content)
         except Exception as e:
             logger.error(f"moderating failed:{e}")
 
     def _moderation(self, content: Union[str, list[str]]):
-        rsp = self.llm.Moderation.create(input=content)
-        return rsp
+        return self.llm.Moderation.create(input=content)
 
     async def amoderation(self, content: Union[str, list[str]]):
         try:
             if not content:
                 logger.error("content cannot be empty!")
             else:
-                rsp = await self._amoderation(content=content)
-                return rsp
+                return await self._amoderation(content=content)
         except Exception as e:
             logger.error(f"moderating failed:{e}")
 
     async def _amoderation(self, content: Union[str, list[str]]):
-        rsp = await self.llm.Moderation.acreate(input=content)
-        return rsp
+        return await self.llm.Moderation.acreate(input=content)

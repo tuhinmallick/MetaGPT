@@ -42,8 +42,8 @@ async def mermaid_to_file(mermaid_code, output_file_without_suffix, width=2048, 
             # Call the `mmdc` command to convert the Mermaid code to a PNG
             logger.info(f"Generating {output_file}..")
 
-            if CONFIG.puppeteer_config:
-                commands = [
+            commands = (
+                [
                     CONFIG.mmdc,
                     "-p",
                     CONFIG.puppeteer_config,
@@ -56,8 +56,19 @@ async def mermaid_to_file(mermaid_code, output_file_without_suffix, width=2048, 
                     "-H",
                     str(height),
                 ]
-            else:
-                commands = [CONFIG.mmdc, "-i", str(tmp), "-o", output_file, "-w", str(width), "-H", str(height)]
+                if CONFIG.puppeteer_config
+                else [
+                    CONFIG.mmdc,
+                    "-i",
+                    str(tmp),
+                    "-o",
+                    output_file,
+                    "-w",
+                    str(width),
+                    "-H",
+                    str(height),
+                ]
+            )
             process = await asyncio.create_subprocess_shell(
                 " ".join(commands), stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
             )
@@ -67,21 +78,20 @@ async def mermaid_to_file(mermaid_code, output_file_without_suffix, width=2048, 
                 logger.info(stdout.decode())
             if stderr:
                 logger.error(stderr.decode())
+    elif engine == "playwright":
+        from metagpt.utils.mmdc_playwright import mermaid_to_file
+
+        return await mermaid_to_file(mermaid_code, output_file_without_suffix, width, height)
+    elif engine == "pyppeteer":
+        from metagpt.utils.mmdc_pyppeteer import mermaid_to_file
+
+        return await mermaid_to_file(mermaid_code, output_file_without_suffix, width, height)
+    elif engine == "ink":
+        from metagpt.utils.mmdc_ink import mermaid_to_file
+
+        return await mermaid_to_file(mermaid_code, output_file_without_suffix)
     else:
-        if engine == "playwright":
-            from metagpt.utils.mmdc_playwright import mermaid_to_file
-
-            return await mermaid_to_file(mermaid_code, output_file_without_suffix, width, height)
-        elif engine == "pyppeteer":
-            from metagpt.utils.mmdc_pyppeteer import mermaid_to_file
-
-            return await mermaid_to_file(mermaid_code, output_file_without_suffix, width, height)
-        elif engine == "ink":
-            from metagpt.utils.mmdc_ink import mermaid_to_file
-
-            return await mermaid_to_file(mermaid_code, output_file_without_suffix)
-        else:
-            logger.warning(f"Unsupported mermaid engine: {engine}")
+        logger.warning(f"Unsupported mermaid engine: {engine}")
     return 0
 
 

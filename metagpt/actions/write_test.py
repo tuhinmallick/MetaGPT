@@ -54,5 +54,4 @@ class WriteTest(Action):
             source_file_path=source_file_path,
             workspace=workspace,
         )
-        code = await self.write_code(prompt)
-        return code
+        return await self.write_code(prompt)

@@ -28,7 +28,7 @@ class LanceStore:
         if self.table is None:
             raise Exception("Table not created yet, please add data first.")
 
-        results = (
+        return (
             self.table.search(query)
             .limit(n_results)
             .select(kwargs.get("select"))
@@ -37,7 +37,6 @@ class LanceStore:
             .nprobes(nprobes)
             .to_df()
         )
-        return results
 
     def persist(self):
         raise NotImplementedError
@@ -84,6 +83,6 @@ class LanceStore:
     def drop(self, name):
         # This function drops a table, if it exists.
 
-        path = os.path.join(self.db.uri, name + ".lance")
+        path = os.path.join(self.db.uri, f"{name}.lance")
         if os.path.exists(path):
             shutil.rmtree(path)

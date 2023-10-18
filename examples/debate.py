@@ -33,11 +33,7 @@ class ShoutOut(Action):
     async def run(self, context: str, name: str, opponent_name: str):
 
         prompt = self.PROMPT_TEMPLATE.format(context=context, name=name, opponent_name=opponent_name)
-        # logger.info(prompt)
-
-        rsp = await self._aask(prompt)
-
-        return rsp
+        return await self._aask(prompt)
 
 class Trump(Role):
     def __init__(
@@ -62,22 +58,18 @@ class Trump(Role):
         logger.info(f"{self._setting}: ready to {self._rc.todo}")
 
         msg_history = self._rc.memory.get_by_actions([ShoutOut])
-        context = []
-        for m in msg_history:
-            context.append(str(m))
+        context = [str(m) for m in msg_history]
         context = "\n".join(context)
 
         rsp = await ShoutOut().run(context=context, name=self.name, opponent_name=self.opponent_name)
 
-        msg = Message(
+        return Message(
             content=rsp,
             role=self.profile,
             cause_by=ShoutOut,
             sent_from=self.name,
             send_to=self.opponent_name,
         )
-
-        return msg
 
 class Biden(Role):
     def __init__(
@@ -103,22 +95,18 @@ class Biden(Role):
         logger.info(f"{self._setting}: ready to {self._rc.todo}")
 
         msg_history = self._rc.memory.get_by_actions([BossRequirement, ShoutOut])
-        context = []
-        for m in msg_history:
-            context.append(str(m))
+        context = [str(m) for m in msg_history]
         context = "\n".join(context)
 
         rsp = await ShoutOut().run(context=context, name=self.name, opponent_name=self.opponent_name)
 
-        msg = Message(
+        return Message(
             content=rsp,
             role=self.profile,
             cause_by=ShoutOut,
             sent_from=self.name,
             send_to=self.opponent_name,
         )
-
-        return msg
 
 async def startup(idea: str, investment: float = 3.0, n_round: int = 5,
                   code_review: bool = False, run_tests: bool = False):

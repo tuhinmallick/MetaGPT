@@ -25,8 +25,7 @@ class SkSearchEngine:
         input_description="search",
     )
     async def run(self, query: str) -> str:
-        result = await self.search_engine.run(query)
-        return result
+        return await self.search_engine.run(query)
 
 
 class SearchEngine:
@@ -59,9 +58,7 @@ class SearchEngine:
         elif engine == SearchEngineType.DUCK_DUCK_GO:
             module = "metagpt.tools.search_engine_ddg"
             run_func = importlib.import_module(module).DDGAPIWrapper().run
-        elif engine == SearchEngineType.CUSTOM_ENGINE:
-            pass  # run_func = run_func
-        else:
+        elif engine != SearchEngineType.CUSTOM_ENGINE:
             raise NotImplementedError
         self.engine = engine
         self.run_func = run_func

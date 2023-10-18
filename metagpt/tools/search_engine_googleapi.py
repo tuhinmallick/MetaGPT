@@ -36,26 +36,26 @@ class GoogleAPIWrapper(BaseModel):
     @validator("google_api_key", always=True)
     @classmethod
     def check_google_api_key(cls, val: str):
-        val = val or CONFIG.google_api_key
-        if not val:
+        if val := val or CONFIG.google_api_key:
+            return val
+        else:
             raise ValueError(
                 "To use, make sure you provide the google_api_key when constructing an object. Alternatively, "
                 "ensure that the environment variable GOOGLE_API_KEY is set with your API key. You can obtain "
                 "an API key from https://console.cloud.google.com/apis/credentials."
             )
-        return val
 
     @validator("google_cse_id", always=True)
     @classmethod
     def check_google_cse_id(cls, val: str):
-        val = val or CONFIG.google_cse_id
-        if not val:
+        if val := val or CONFIG.google_cse_id:
+            return val
+        else:
             raise ValueError(
                 "To use, make sure you provide the google_cse_id when constructing an object. Alternatively, "
                 "ensure that the environment variable GOOGLE_CSE_ID is set with your API key. You can obtain "
                 "an API key from https://programmablesearchengine.google.com/controlpanel/create."
             )
-        return val
 
     @property
     def google_api_client(self):
@@ -112,10 +112,7 @@ class GoogleAPIWrapper(BaseModel):
         focus = focus or ["snippet", "link", "title"]
         details = [{i: j for i, j in item_dict.items() if i in focus} for item_dict in search_results]
         # Return the list of search result URLs
-        if as_string:
-            return safe_google_results(details)
-
-        return details
+        return safe_google_results(details) if as_string else details
 
 
 def safe_google_results(results: str | list) -> str:
@@ -127,11 +124,11 @@ def safe_google_results(results: str | list) -> str:
     Returns:
         The results of the search.
     """
-    if isinstance(results, list):
-        safe_message = json.dumps([result for result in results])
-    else:
-        safe_message = results.encode("utf-8", "ignore").decode("utf-8")
-    return safe_message
+    return (
+        json.dumps(list(results))
+        if isinstance(results, list)
+        else results.encode("utf-8", "ignore").decode("utf-8")
+    )
 
 
 if __name__ == "__main__":

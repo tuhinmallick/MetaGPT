@@ -49,7 +49,7 @@ def generate_prompt_chunk(
     current_token = 0
     current_lines = []
 
-    reserved = reserved + count_string_tokens(prompt_template+system_text, model_name)
+    reserved += count_string_tokens(prompt_template+system_text, model_name)
     # 100 is a magic number to ensure the maximum context length is not exceeded
     max_token = TOKEN_MAX.get(model_name, 2048) - reserved - 100  
 
@@ -86,8 +86,7 @@ def split_paragraph(paragraph: str, sep: str = ".,", count: int = 2) -> list[str
         sentences = list(_split_text_with_ends(paragraph, i))
         if len(sentences) <= 1:
             continue
-        ret = ["".join(j) for j in _split_by_count(sentences, count)]
-        return ret
+        return ["".join(j) for j in _split_by_count(sentences, count)]
     return _split_by_count(paragraph, count)
 
 
@@ -104,8 +103,7 @@ def decode_unicode_escape(text: str) -> str:
 
 
 def _split_by_count(lst: Sequence , count: int):
-    avg = len(lst) // count
-    remainder = len(lst) % count
+    avg, remainder = divmod(len(lst), count)
     start = 0
     for i in range(count):
         end = start + avg + (1 if i < remainder else 0)

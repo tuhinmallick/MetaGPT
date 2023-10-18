@@ -80,13 +80,13 @@ class Engineer(Role):
         self.n_borg = n_borg
 
     @classmethod
-    def parse_tasks(self, task_msg: Message) -> list[str]:
+    def parse_tasks(cls, task_msg: Message) -> list[str]:
         if task_msg.instruct_content:
             return task_msg.instruct_content.dict().get("Task list")
         return CodeParser.parse_file_list(block="Task list", text=task_msg.content)
 
     @classmethod
-    def parse_code(self, code_text: str) -> str:
+    def parse_code(cls, code_text: str) -> str:
         return CodeParser.parse_code(block="", text=code_text)
 
     @classmethod
@@ -177,10 +177,8 @@ class Engineer(Role):
             3. Do we need other codes (currently needed)?
             TODO: The goal is not to need it. After clear task decomposition, based on the design idea, you should be able to write a single file without needing other codes. If you can't, it means you need a clearer definition. This is the key to writing longer code.
             """
-            context = []
             msg = self._rc.memory.get_by_actions([WriteDesign, WriteTasks, WriteCode])
-            for m in msg:
-                context.append(m.content)
+            context = [m.content for m in msg]
             context_str = "\n".join(context)
             # Write code
             code = await WriteCode().run(context=context_str, filename=todo)
@@ -191,7 +189,6 @@ class Engineer(Role):
                     code = rewrite_code
                 except Exception as e:
                     logger.error("code review failed!", e)
-                    pass
             file_path = self.write_file(todo, code)
             msg = Message(content=code, role=self.profile, cause_by=WriteCode)
             self._rc.memory.add(msg)
