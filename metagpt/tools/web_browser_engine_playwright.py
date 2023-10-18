@@ -84,8 +84,9 @@ class PlaywrightWrapper:
 
             if not executable_path.exists():
                 parts = executable_path.parts
-                available_paths = list(Path(*parts[:-3]).glob(f"{self.browser_type}-*"))
-                if available_paths:
+                if available_paths := list(
+                    Path(*parts[:-3]).glob(f"{self.browser_type}-*")
+                ):
                     logger.warning(
                         "It seems that your OS is not officially supported by Playwright. "
                         "Try to set executable_path to the fallback build version."

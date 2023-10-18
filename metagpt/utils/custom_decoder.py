@@ -25,7 +25,7 @@ def py_make_scanner(context):
         except IndexError:
             raise StopIteration(idx) from None
 
-        if nextchar == '"' or nextchar == "'":
+        if nextchar in ['"', "'"]:
             if idx + 2 < len(string) and string[idx + 1] == nextchar and string[idx + 2] == nextchar:
                 # Handle the case where the next two characters are the same as nextchar
                 return parse_string(string, idx + 3, strict, delimiter=nextchar * 3)  # triple quote
@@ -120,7 +120,7 @@ def JSONObject(
     # check will raise a more specific ValueError if the string is empty
     nextchar = s[end : end + 1]
     # Normally we expect nextchar == '"'
-    if nextchar != '"' and nextchar != "'":
+    if nextchar not in ['"', "'"]:
         if nextchar in _ws:
             end = _w(s, end).end()
             nextchar = s[end : end + 1]
@@ -148,15 +148,15 @@ def JSONObject(
         # the JSON key separator is ": " or just ":".
         if s[end : end + 1] != ":":
             end = _w(s, end).end()
-            if s[end : end + 1] != ":":
-                raise JSONDecodeError("Expecting ':' delimiter", s, end)
+        if s[end : end + 1] != ":":
+            raise JSONDecodeError("Expecting ':' delimiter", s, end)
         end += 1
 
         try:
             if s[end] in _ws:
                 end += 1
-                if s[end] in _ws:
-                    end = _w(s, end + 1).end()
+            if s[end] in _ws:
+                end = _w(s, end + 1).end()
         except IndexError:
             pass
 

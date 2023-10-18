@@ -19,9 +19,7 @@ class Moderation:
         if content:
             moderation_results = self.llm.moderation(content=content)
             results = moderation_results.results
-            for item in results:
-                resp.append(item.flagged)
-
+            resp.extend(item.flagged for item in results)
         return resp
 
     async def amoderation(self, content: Union[str, list[str]]):
@@ -29,9 +27,7 @@ class Moderation:
         if content:
             moderation_results = await self.llm.amoderation(content=content)
             results = moderation_results.results
-            for item in results:
-                resp.append(item.flagged)
-
+            resp.extend(item.flagged for item in results)
         return resp
 
 

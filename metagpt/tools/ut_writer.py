@@ -116,7 +116,7 @@ class UTGenerator:
         self.swagger_file = swagger_file
         self.ut_py_path = ut_py_path
         self.questions_path = questions_path
-        assert chatgpt_method in ["API"], "Invalid chatgpt_method"
+        assert chatgpt_method in {"API"}, "Invalid chatgpt_method"
         self.chatgpt_method = chatgpt_method
 
         # ICL: In-Context Learning, provide an example here for GPT to mimic
@@ -274,11 +274,7 @@ class UTGenerator:
 
     def gpt_msgs_to_code(self, messages: list) -> str:
         """Choose based on different calling methods"""
-        result = ''
-        if self.chatgpt_method == "API":
-            result = GPTAPI().ask_code(msgs=messages)
-
-        return result
+        return GPTAPI().ask_code(msgs=messages) if self.chatgpt_method == "API" else ''
 
     def get_file_path(self, base: Path, fname: str):
         """Save different file paths

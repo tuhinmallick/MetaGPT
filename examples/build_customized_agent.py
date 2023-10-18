@@ -40,16 +40,13 @@ class SimpleWriteCode(Action):
 
         rsp = await self._aask(prompt)
 
-        code_text = SimpleWriteCode.parse_code(rsp)
-
-        return code_text
+        return SimpleWriteCode.parse_code(rsp)
 
     @staticmethod
     def parse_code(rsp):
         pattern = r'```python(.*)```'
         match = re.search(pattern, rsp, re.DOTALL)
-        code_text = match.group(1) if match else rsp
-        return code_text
+        return match.group(1) if match else rsp
 
 class SimpleRunCode(Action):
     def __init__(self, name="SimpleRunCode", context=None, llm=None):

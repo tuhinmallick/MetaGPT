@@ -60,7 +60,7 @@ class File:
         try:
             chunk_size = chunk_size or cls.CHUNK_SIZE
             async with aiofiles.open(file_path, mode="rb") as reader:
-                chunks = list()
+                chunks = []
                 while True:
                     chunk = await reader.read(chunk_size)
                     if not chunk:

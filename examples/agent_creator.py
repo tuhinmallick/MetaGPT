@@ -40,9 +40,7 @@ class CreateAgent(Action):
 
         rsp = await self._aask(prompt)
 
-        code_text = CreateAgent.parse_code(rsp)
-
-        return code_text
+        return CreateAgent.parse_code(rsp)
 
     @staticmethod
     def parse_code(rsp):

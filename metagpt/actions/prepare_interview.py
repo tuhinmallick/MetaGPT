@@ -36,6 +36,5 @@ class PrepareInterview(Action):
 
     async def run(self, context):
         prompt = PROMPT_TEMPLATE.format(context=context)
-        question_list = await self._aask_v1(prompt)
-        return question_list
+        return await self._aask_v1(prompt)
 

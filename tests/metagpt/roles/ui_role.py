@@ -208,7 +208,9 @@ class UIDesign(Action):
         prompts_batch = []
         for icon_prompt in icons:
             # fixme: 添加icon lora
-            prompt = engine.construct_payload(icon_prompt + ".<lora:WZ0710_AW81e-3_30e3b128d64T32_goon0.5>")
+            prompt = engine.construct_payload(
+                f"{icon_prompt}.<lora:WZ0710_AW81e-3_30e3b128d64T32_goon0.5>"
+            )
             prompts_batch.append(prompt)
         await engine.run_t2i(prompts_batch)
         logger.info("Finish icon design using StableDiffusion API")

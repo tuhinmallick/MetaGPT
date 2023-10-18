@@ -48,5 +48,4 @@ class DetailMining(Action):
 
     async def run(self, topic, record) -> ActionOutput:
         prompt = PROMPT_TEMPLATE.format(topic=topic, record=record, format_example=FORMAT_EXAMPLE)
-        rsp = await self._aask_v1(prompt, "detail_mining", OUTPUT_MAPPING)
-        return rsp
+        return await self._aask_v1(prompt, "detail_mining", OUTPUT_MAPPING)
